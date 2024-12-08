@@ -24,7 +24,7 @@ export async function POST(req: Request){
     })
 
 
-    return NextResponse.json(store, {status: 201})
+    return NextResponse.json(store, { status: 201 })
 
   } catch (error) {
     console.log('[STORES_POST]', error)

@@ -10,6 +10,9 @@ import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { useState } from "react"
 import axios from 'axios'
+import toast from "react-hot-toast"
+import { redirect } from "next/navigation"
+
 
 const formSchema = z.object({
   name: z.string().min(1, {message: 'Required'})
@@ -32,10 +35,10 @@ export const StoreModal = () => {
       setLoading(true)
       console.log(values)
       const response = await axios.post('/api/stores', values)
-      console.log(response.data)
+      window.location.assign(`/${response.data.id}`)
 
     } catch (error) {
-      
+      toast.error("Something went wrong.")
     } finally {
       setLoading(false)
     }
@@ -60,7 +63,7 @@ export const StoreModal = () => {
                 }
               />
               <div className="pt-6 space-x-2 flex items-center justify-end w-full">
-                <Button disabled={loading} variant="outline" onClick={storeModal.onClose}>
+                <Button type="button" disabled={loading} variant="outline" onClick={storeModal.onClose}>
                   Cancel
                 </Button>
                 <Button disabled={loading} type="submit">Continue</Button>
