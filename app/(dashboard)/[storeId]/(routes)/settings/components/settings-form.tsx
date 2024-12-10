@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
+import { useOrigin } from "@/hooks/use-origin"
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { Store } from "@prisma/client"
 import axios from "axios"
@@ -35,6 +36,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const origin = useOrigin()
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsFormSchema),
@@ -102,7 +104,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
         </form> 
       </Form> 
       <Separator />
-      <ApiAlert title="NEXT_PUBLIC_API_URL" description="test-desc" variant="public" />
+      <ApiAlert title="NEXT_PUBLIC_API_URL" description={`${origin}/api/${params.storeId}`} variant="public" />
     </>
   )
 }
