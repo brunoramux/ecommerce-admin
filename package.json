@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "commit": "git add . && git commit -m 'Commit' && git push"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.7.0",

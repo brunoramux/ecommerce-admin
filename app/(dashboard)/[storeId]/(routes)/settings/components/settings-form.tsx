@@ -2,6 +2,7 @@
 
 import { Heading } from "@/components/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
+import { ApiAlert } from "@/components/ui/api-alert"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -98,8 +99,10 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
           <Button disabled={loading}>
             Save changes
           </Button>
-        </form>
+        </form> 
       </Form> 
+      <Separator />
+      <ApiAlert title="NEXT_PUBLIC_API_URL" description="test-desc" variant="public" />
     </>
   )
 }
