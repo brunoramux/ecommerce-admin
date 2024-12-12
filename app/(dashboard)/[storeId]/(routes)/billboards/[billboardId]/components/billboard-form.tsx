@@ -35,8 +35,8 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 }) => {
   const params = useParams()
   const router = useRouter()
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [ open, setOpen ] = useState(false)
+  const [ loading, setLoading ] = useState(false)
   const origin = useOrigin()
 
   const title = initialData ? "Edit billboard" : "Create billboard"
@@ -55,10 +55,14 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
   const onSubmit = async (data: BillboardFormValues) => {
     try {
       setLoading(true)
-      await axios.patch(`/api/stores/${params.storeId}`, data)
+      if( initialData ){
+        await axios.patch(`/api/${params.storeId}/billboards/${params.billboardId}`, data)
+      } else {
+        await axios.post(`/api/${params.storeId}/billboards`, data)
+      }
       router.refresh()
       setLoading(false)
-      toast.success("Store updated.")
+      toast.success(toastMessage)
     } catch (error) {
       toast.error("Something went wrong.")
       setLoading(false)
@@ -68,12 +72,12 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true)
-      await axios.delete(`/api/stores/${params.storeId}`)
+      await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`)
       router.refresh()
       router.push("/")
-      toast.success("Store deleted.")
+      toast.success("Billboard deleted.")
     } catch (error) {
-      toast.error("Make sure you removed all products and categorics first.")
+      toast.error("Make sure you removed all categories using this billboard.")
     } finally {
       setLoading(false)
       setOpen(false)

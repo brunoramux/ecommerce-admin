@@ -6,21 +6,18 @@ const BillboardPage = async ({
 } : {
   params: { billboardId: string }
 }) => {
+  const { billboardId } = await params
   const billboard = await prismadb.billboard.findUnique({
     where: {
-      id: params.billboardId
+      id: billboardId
     }
   })
 
-  const formatedBillboard = {
-    label: billboard?.label,
-    imageUrl: billboard?.imageUrl
-  }
 
   return ( 
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <BillboardForm initialData={formatedBillboard && null}/>
+        <BillboardForm initialData={billboard}/>
       </div>
     </div>
    );
