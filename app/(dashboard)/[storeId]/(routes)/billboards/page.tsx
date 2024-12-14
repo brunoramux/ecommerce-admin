@@ -1,5 +1,7 @@
 import prismadb from "@/lib/prismadb"
 import BillboardClient from "./components/client"
+import type { BillboardColumns } from "./components/columns"
+import { format } from 'date-fns'
 
 const BillboardsPage = async ({
   params
@@ -24,11 +26,17 @@ const BillboardsPage = async ({
     }),
   ]);
 
+  const formattedBillboards: BillboardColumns[] = billboards.map(item => ({
+    id: item.id,
+    label: item.label,
+    createdAt: format(item.createdAt, 'MMMM do, yyyy')
+  }))
+
 
   return ( 
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <BillboardClient billboards={billboards}/>
+        <BillboardClient billboards={formattedBillboards}/>
       </div>
     </div>
    )
