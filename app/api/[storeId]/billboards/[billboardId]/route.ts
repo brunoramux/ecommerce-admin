@@ -70,9 +70,6 @@ export async function PATCH(
       return new NextResponse('Label is required', { status: 400 })
     }
 
-    if(!imageUrl){
-      return new NextResponse('Image URL is required', { status: 400 })
-    }
 
     if(!storeId){
       return new NextResponse('Store is required', { status: 400 })
