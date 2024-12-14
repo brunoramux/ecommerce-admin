@@ -7,13 +7,9 @@ export async function GET(
   { params }: { params: { storeId: string, billboardId: string } }
 ){
   try {
-    const { userId } = await auth() 
 
     const { billboardId, storeId} = await params
 
-    if(!userId){
-      return new NextResponse('Unauthorized', {status: 401})
-    }
 
     if(!storeId){
       return new NextResponse('Store is required', {status: 400})
@@ -26,7 +22,6 @@ export async function GET(
     const store = await prismadb.store.findUnique({
       where: {
         id: storeId,
-        userId  
       }
     })
 
