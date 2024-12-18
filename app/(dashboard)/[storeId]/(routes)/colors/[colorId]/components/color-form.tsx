@@ -23,7 +23,9 @@ interface ColorFormProps {
 
 const colorFormSchema = z.object({
   name: z.string().min(1, {message: "Value required"}),
-  value: z.string().min(1, {message: "Value required"}),
+  value: z.string().min(1, {message: "Value required"}).regex(/^#/, {
+    message: 'String must be a valid hex code.'
+  }),
 })
 
 type ColorFormValues = z.infer<typeof colorFormSchema>
@@ -101,33 +103,39 @@ export const ColorForm: React.FC<ColorFormProps> = ({
       <Separator />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
-          <FormField 
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="Color name" {...field}/>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           <div className="grid grid-cols-3 gap-8">
             <FormField 
-              control={form.control}
-              name="value"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Value</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="Color value" {...field}/>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input disabled={loading} placeholder="Color name" {...field}/>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField 
+                control={form.control}
+                name="value"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Value</FormLabel>
+                    <FormControl>
+                      <div className="flex item-center gap-x-4">
+                        <Input disabled={loading} placeholder="Color value" {...field}/>
+                        <div 
+                          className="border p-4 rounded-full w-4 h-4"
+                          style={{ backgroundColor: field.value }}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
           </div> 
           <Button disabled={loading}>
             {action}
