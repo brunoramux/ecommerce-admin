@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator"
 import { useOrigin } from "@/hooks/use-origin"
 import { zodResolver } from "@hookform/resolvers/zod"
-import type { Category, Image, Product } from "@prisma/client"
+import type { Category, Color, Image, Product, Size } from "@prisma/client"
 import axios from "axios"
 import { Trash } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
@@ -24,6 +24,8 @@ interface ProductFormProps {
     images: Image[]
   } | null
   categories: Category[]
+  colors: Color[]
+  sizes: Size[]
 }
 
 const productFormSchema = z.object({
@@ -42,7 +44,9 @@ type ProductFormValues = z.infer<typeof productFormSchema>
 
 export const ProductForm: React.FC<ProductFormProps> = ({
   initialData,
-  categories
+  categories,
+  colors,
+  sizes
 }) => {
   const params = useParams()
   const router = useRouter()
@@ -172,31 +176,87 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 </FormItem>
               )}
             />
-            <FormField 
-              control={form.control}
-              name="categoryId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Categories</FormLabel>
-                  <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue defaultValue={field.value} placeholder="Select a category" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {categories.map(category => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div> 
+          </div>
+            <div className="grid grid-cols-3 gap-8">
+              <FormField 
+                control={form.control}
+                name="categoryId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Categories</FormLabel>
+                    <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue defaultValue={field.value} placeholder="Select a category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories.map(category => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField 
+                control={form.control}
+                name="colorId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Colors</FormLabel>
+                    <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue defaultValue={field.value} placeholder="Select a color" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {colors.map(color => (
+                          <SelectItem key={color.id} value={color.id}>
+                            <div className="flex items-center gap-4">
+                              {color.name}
+                              <div 
+                                className="border p-4 rounded-full w-4 h-4"
+                                style={{ backgroundColor: color.value }}
+                              />
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField 
+                control={form.control}
+                name="sizeId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sizes</FormLabel>
+                    <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue defaultValue={field.value} placeholder="Select a size" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {sizes.map(size => (
+                          <SelectItem key={size.id} value={size.id}>
+                            {size.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           <Button disabled={loading}>
             {action}
           </Button>
