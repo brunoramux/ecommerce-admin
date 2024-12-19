@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import ImageUpload from "@/components/ui/image-upload"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { useOrigin } from "@/hooks/use-origin"
 import { zodResolver } from "@hookform/resolvers/zod"
-import type { Image, Product } from "@prisma/client"
+import type { Category, Image, Product } from "@prisma/client"
 import axios from "axios"
 import { Trash } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
@@ -22,6 +23,7 @@ interface ProductFormProps {
   initialData: Product & {
     images: Image[]
   } | null
+  categories: Category[]
 }
 
 const productFormSchema = z.object({
@@ -39,7 +41,8 @@ type ProductFormValues = z.infer<typeof productFormSchema>
 
 
 export const ProductForm: React.FC<ProductFormProps> = ({
-  initialData
+  initialData,
+  categories
 }) => {
   const params = useParams()
   const router = useRouter()
@@ -152,6 +155,43 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   <FormControl>
                     <Input disabled={loading} placeholder="Product name" {...field}/>
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField 
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input type="number" disabled={loading} placeholder="9.99" {...field}/>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField 
+              control={form.control}
+              name="categoryId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Categories</FormLabel>
+                  <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue defaultValue={field.value} placeholder="Select a category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {categories.map(category => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

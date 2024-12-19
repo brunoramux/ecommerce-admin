@@ -4,9 +4,9 @@ import { ProductForm } from "./components/product-form";
 const ProductPage = async ({ 
   params 
 } : {
-  params: { productId: string }
+  params: { productId: string, storeId: string }
 }) => {
-  const { productId } = await params
+  const { productId, storeId } = await params
 
   const product = await prismadb.product.findUnique({
     where: {
@@ -17,11 +17,17 @@ const ProductPage = async ({
     }
   })
 
+  const categories = await prismadb.category.findMany({
+    where: {
+      storeId
+    }
+  })
+
 
   return ( 
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <ProductForm initialData={product}/>
+        <ProductForm initialData={product} categories={categories}/>
       </div>
     </div>
    );
