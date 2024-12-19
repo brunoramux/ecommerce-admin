@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { useOrigin } from "@/hooks/use-origin"
 import { zodResolver } from "@hookform/resolvers/zod"
-import type { Billboard } from "@prisma/client"
+import type { Product } from "@prisma/client"
 import axios from "axios"
 import { Trash } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
@@ -18,19 +18,19 @@ import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { z } from "zod"
 
-interface BillboardFormProps {
-  initialData: Billboard | null
+interface ProductFormProps {
+  initialData: Product | null
 }
 
-const billboardFormSchema = z.object({
-  label: z.string().min(1, {message: "Value required"}),
-  imageUrl: z.string()
+const productFormSchema = z.object({
+  name: z.string().min(1, {message: "Value required"}),
+  imageUrl: z.string() 
 })
 
-type BillboardFormValues = z.infer<typeof billboardFormSchema>
+type ProductFormValues = z.infer<typeof productFormSchema>
 
 
-export const BillboardForm: React.FC<BillboardFormProps> = ({
+export const ProductForm: React.FC<ProductFormProps> = ({
   initialData
 }) => {
   const params = useParams()
@@ -39,30 +39,30 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
   const [ loading, setLoading ] = useState(false)
   const origin = useOrigin()
 
-  const title = initialData ? "Edit billboard" : "Create billboard"
-  const description = initialData ? "Edit a billboard" : "Add a new billboard"
-  const toastMessage = initialData ? "Billboard updated." : "Billboard created."
+  const title = initialData ? "Edit product" : "Create product"
+  const description = initialData ? "Edit a product" : "Add a new product"
+  const toastMessage = initialData ? "Product updated." : "Product created."
   const action = initialData ? "Save changes" : "Create"
 
-  const form = useForm<BillboardFormValues>({
-    resolver: zodResolver(billboardFormSchema),
+  const form = useForm<ProductFormValues>({
+    resolver: zodResolver(productFormSchema),
     defaultValues: initialData || {
       label: '',
       imageUrl: ''
     }
   })
 
-  const onSubmit = async (data: BillboardFormValues) => {
+  const onSubmit = async (data: ProductFormValues) => {
     try {
       setLoading(true)
       if( initialData ){
-        await axios.patch(`/api/${params.storeId}/billboards/${params.billboardId}`, data)
+        await axios.patch(`/api/${params.storeId}/products/${params.productId}`, data)
       } else {
-        await axios.post(`/api/${params.storeId}/billboards`, data)
+        await axios.post(`/api/${params.storeId}/products`, data)
       }
       router.refresh()
       setLoading(false)
-      router.push(`/${params.storeId}/billboards`)
+      router.push(`/${params.storeId}/products`)
 
       toast.success(toastMessage)
     } catch (error) {
@@ -74,12 +74,12 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true)
-      await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`)
+      await axios.delete(`/api/${params.storeId}/products/${params.productId}`)
       router.refresh()
-      router.push(`/${params.storeId}/billboards`)
-      toast.success("Billboard deleted.")
+      router.push(`/${params.storeId}/products`)
+      toast.success("Product deleted.")
     } catch (error) {
-      toast.error("Make sure you removed all categories using this billboard.")
+      toast.error("Make sure you removed all categories using this product.")
     } finally {
       setLoading(false)
       setOpen(false)
@@ -127,7 +127,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
                 <FormItem>
                   <FormLabel>Label</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field}/>
+                    <Input disabled={loading} placeholder="Product label" {...field}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
