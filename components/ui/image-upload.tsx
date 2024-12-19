@@ -49,7 +49,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           </div>
         ))}
       </div>
-      <CldUploadWidget onSuccess={onUpload} uploadPreset="ecom-adm">
+      <CldUploadWidget onSuccess={onUpload} uploadPreset="ecom-adm" options={{ sources: ['local'], cropping: true, theme: 'minimal' }}>
         {({ open }) => {
           const onClick = () => {
             open()
