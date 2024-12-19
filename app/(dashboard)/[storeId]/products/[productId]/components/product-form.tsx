@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { useOrigin } from "@/hooks/use-origin"
 import { zodResolver } from "@hookform/resolvers/zod"
-import type { Product } from "@prisma/client"
+import type { Image, Product } from "@prisma/client"
 import axios from "axios"
 import { Trash } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
@@ -19,12 +19,20 @@ import toast from "react-hot-toast"
 import { z } from "zod"
 
 interface ProductFormProps {
-  initialData: Product | null
+  initialData: Product & {
+    images: Image[]
+  } | null
 }
 
 const productFormSchema = z.object({
   name: z.string().min(1, {message: "Value required"}),
-  imageUrl: z.string() 
+  images: z.object({ url: z.string().url() }).array(),
+  price: z.coerce.number().min(1),
+  categoryId: z.string().min(1),
+  colorId: z.string().min(1),
+  sizeId: z.string().min(1),
+  isFeatured: z.boolean().default(false).optional(),
+  isArchived: z.boolean().default(false).optional()
 })
 
 type ProductFormValues = z.infer<typeof productFormSchema>
@@ -46,9 +54,18 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
-    defaultValues: initialData || {
-      label: '',
-      imageUrl: ''
+    defaultValues: initialData ? {
+      ...initialData,
+      price: parseFloat(String(initialData.price))
+    } : {
+      name: '',
+      images: [],
+      price: 0,
+      categoryId: '',
+      colorId: '',
+      sizeId: '',
+      isArchived: false,
+      isFeatured: false
     }
   })
 
@@ -104,16 +121,22 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <FormField 
               control={form.control}
-              name="imageUrl"
+              name="images"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Background image</FormLabel>
+                  <FormLabel>Images</FormLabel>
                   <FormControl>
                     <ImageUpload 
-                      value={field.value ? [field.value] : []}
+                      value={field.value.map(image => image.url)}
                       disabled={loading}
-                      onChange={(url) => field.onChange(url)}
-                      onRemove={() => field.onChange("")}
+                      onChange={(url) => {
+                        const newValue = [...field.value, { url }];
+                        field.onChange((field.value = newValue));
+                      }}
+                      onRemove={(url) => {
+                        const newValue = field.value.filter((current) => current.url !== url);
+                        field.onChange(newValue);
+                      }}
                     />
                   </FormControl>
                 </FormItem>
@@ -122,12 +145,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           <div className="grid grid-cols-3 gap-8">
             <FormField 
               control={form.control}
-              name="label"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Label</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Product label" {...field}/>
+                    <Input disabled={loading} placeholder="Product name" {...field}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

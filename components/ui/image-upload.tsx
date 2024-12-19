@@ -45,7 +45,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 <Trash className="w-4 h-4"/>
               </Button>
             </div>
-            <Image src={url} width={200} height={200} alt="Image"/>
+            <Image src={url} width={200} height={200} alt="Image" style={{width: 'auto'}}/>
           </div>
         ))}
       </div>
