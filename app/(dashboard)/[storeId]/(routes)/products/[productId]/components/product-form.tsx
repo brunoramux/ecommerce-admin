@@ -3,7 +3,8 @@
 import { Heading } from "@/components/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
 import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import ImageUpload from "@/components/ui/image-upload"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -77,22 +78,23 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   })
 
   const onSubmit = async (data: ProductFormValues) => {
-    try {
-      setLoading(true)
-      if( initialData ){
-        await axios.patch(`/api/${params.storeId}/products/${params.productId}`, data)
-      } else {
-        await axios.post(`/api/${params.storeId}/products`, data)
-      }
-      router.refresh()
-      setLoading(false)
-      router.push(`/${params.storeId}/products`)
+    console.log(data)
+    // try {
+    //   setLoading(true)
+    //   if( initialData ){
+    //     await axios.patch(`/api/${params.storeId}/products/${params.productId}`, data)
+    //   } else {
+    //     await axios.post(`/api/${params.storeId}/products`, data)
+    //   }
+    //   router.refresh()
+    //   setLoading(false)
+    //   router.push(`/${params.storeId}/products`)
 
-      toast.success(toastMessage)
-    } catch (error) {
-      toast.error("Something went wrong.")
-      setLoading(false)
-    }
+    //   toast.success(toastMessage)
+    // } catch (error) {
+    //   toast.error("Something went wrong.")
+    //   setLoading(false)
+    // }
   }
 
   const onDelete = async () => {
@@ -177,7 +179,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               )}
             />
           </div>
-            <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-3 gap-8">
               <FormField 
                 control={form.control}
                 name="categoryId"
@@ -220,7 +222,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                             <div className="flex items-center gap-4">
                               {color.name}
                               <div 
-                                className="border p-4 rounded-full w-4 h-4"
+                                className="border p-2 rounded-full w-2 h-2"
                                 style={{ backgroundColor: color.value }}
                               />
                             </div>
@@ -256,7 +258,55 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   </FormItem>
                 )}
               />
-            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-8">
+            <FormField 
+              control={form.control}
+              name="isFeatured"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox 
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Featured
+                    </FormLabel>
+                    <FormDescription>
+                      This product will appear on the home page.
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-8">
+            <FormField 
+              control={form.control}
+              name="isArchived"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox 
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Archived
+                    </FormLabel>
+                    <FormDescription>
+                      This product will not appear anywhere in the store.
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+          </div>
           <Button disabled={loading}>
             {action}
           </Button>
