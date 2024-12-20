@@ -16,6 +16,12 @@ const ProductPage = async ({
       images: true
     }
   })
+  
+    const formattedProducts = {
+      ...product,
+      price: parseFloat(String(product?.price))
+    }
+  
 
   const categories = await prismadb.category.findMany({
     where: {
@@ -39,7 +45,7 @@ const ProductPage = async ({
   return ( 
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <ProductForm initialData={product} categories={categories} colors={colors} sizes={sizes}/>
+        <ProductForm initialData={product ? formattedProducts : undefined} categories={categories} colors={colors} sizes={sizes}/>
       </div>
     </div>
    );

@@ -33,6 +33,9 @@ export async function GET(
       where: {
         storeId: storeId,
         id: productId
+      },
+      include: {
+        images: true
       }
     })
 
@@ -45,15 +48,37 @@ export async function GET(
   }
 }
 
+interface createProductProps {
+  name: string
+  images: {
+    url: string
+  }[]
+  price: number
+  categoryId: string
+  colorId: string
+  sizeId: string
+  isFeatured: boolean
+  isArchived: boolean
+}
+
 export async function PATCH(
   req: Request,
   { params }: { params: { storeId: string, productId: string } }
 ){
   try {
     const { userId } = await auth()
-    const body = await req.json()
+    const body: createProductProps = await req.json()
 
-    const { label, imageUrl } = body
+    const { 
+      categoryId,
+      colorId,
+      images,
+      isArchived,
+      isFeatured,
+      name,
+      price,
+      sizeId
+     } = body
 
     const { productId, storeId } = await params
 
@@ -61,7 +86,7 @@ export async function PATCH(
       return new NextResponse('Unauthorized', { status: 401 })
     }
 
-    if(!label){
+    if(!name){
       return new NextResponse('Label is required', { status: 400 })
     }
 
@@ -90,9 +115,30 @@ export async function PATCH(
         id: productId,
       },
       data: {
-        label,
-        imageUrl
+        categoryId,
+        colorId,
+        name,
+        price,
+        sizeId,
+        storeId,
+        isArchived,
+        isFeatured
+      },
+    })
+
+    await prismadb.image.deleteMany({
+      where: {
+        productId
       }
+    })
+
+    images.forEach(async (image) => {
+      await prismadb.image.create({
+        data: {
+          productId,
+          url: image.url
+        }
+      })
     })
 
     return NextResponse.json(product, { status: 200 })
@@ -141,6 +187,7 @@ export async function DELETE(
         storeId: storeId
       },
     })
+
 
     return NextResponse.json(product, { status: 200 })
 

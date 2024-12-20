@@ -20,17 +20,36 @@ import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { z } from "zod"
 
+interface ProductProps {
+    isFeatured?: boolean;
+    isArchived?: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
+    categoryId?: string;
+    sizeId?: string;
+    price: number;
+    images?: {
+        productId: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        url: string;
+    }[] | undefined;
+    storeId?: string | undefined;
+    id?: string | undefined;
+    name?: string | undefined;
+    colorId?: string | undefined;
+}
+
 interface ProductFormProps {
-  initialData: Product & {
-    images: Image[]
-  } | null
+  initialData?: ProductProps 
   categories: Category[]
   colors: Color[]
   sizes: Size[]
 }
 
 const productFormSchema = z.object({
-  name: z.string().min(1, {message: "Value required"}),
+  name: z.string().min(1, { message: "Value required" }),
   images: z.object({ url: z.string().url() }).array(),
   price: z.coerce.number().min(1),
   categoryId: z.string().min(1),
