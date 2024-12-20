@@ -78,23 +78,22 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   })
 
   const onSubmit = async (data: ProductFormValues) => {
-    console.log(data)
-    // try {
-    //   setLoading(true)
-    //   if( initialData ){
-    //     await axios.patch(`/api/${params.storeId}/products/${params.productId}`, data)
-    //   } else {
-    //     await axios.post(`/api/${params.storeId}/products`, data)
-    //   }
-    //   router.refresh()
-    //   setLoading(false)
-    //   router.push(`/${params.storeId}/products`)
+    try {
+      setLoading(true)
+      if( initialData ){
+        await axios.patch(`/api/${params.storeId}/products/${params.productId}`, data)
+      } else {
+        await axios.post(`/api/${params.storeId}/products`, data)
+      }
+      router.refresh()
+      setLoading(false)
+      router.push(`/${params.storeId}/products`)
 
-    //   toast.success(toastMessage)
-    // } catch (error) {
-    //   toast.error("Something went wrong.")
-    //   setLoading(false)
-    // }
+      toast.success(toastMessage)
+    } catch (error) {
+      toast.error("Something went wrong.")
+      setLoading(false)
+    }
   }
 
   const onDelete = async () => {
