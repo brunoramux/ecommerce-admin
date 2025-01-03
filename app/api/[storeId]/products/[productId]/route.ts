@@ -10,7 +10,6 @@ export async function GET(
 
     const { productId, storeId} = await params
 
-
     if(!storeId){
       return new NextResponse('Store is required', {status: 400})
     }
@@ -35,7 +34,10 @@ export async function GET(
         id: productId
       },
       include: {
-        images: true
+        images: true,
+        category: true,
+        color: true,
+        size: true
       }
     })
 
